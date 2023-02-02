@@ -27,11 +27,11 @@ public class WebSecurityConfig {
             .cors().and()
             .authorizeHttpRequests()
             .requestMatchers(
-                "/books/", 
-                "/books/list", 
-                "/books/steal/*", 
-                "/h2-console/", 
-                "/", 
+                "/books/",
+                "/books/list",
+                "/books/steal/*",
+                "/h2-console/",
+                "/",
                 "/error"
             ).permitAll()
             .and()

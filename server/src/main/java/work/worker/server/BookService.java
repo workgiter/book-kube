@@ -21,10 +21,17 @@ import work.worker.server.models.Book;
 @Component
 public class BookService {
 
+    /**object used for making http get request to google api. */
     RestTemplate restTemplate = new RestTemplate();
 
+    /**reposatory for Book class. */
     BookRepository bookRepo;
 
+    /**
+     * sets bookRepo to passed in book repo.
+     * This lets you pass in a mock repon during testing
+     * @param newBookRepo reposatory for book class
+     */
     @Autowired
     public void setBookRepo(final BookRepository newBookRepo) {
         this.bookRepo = newBookRepo;
@@ -32,55 +39,65 @@ public class BookService {
 
     BookService() { }
 
-    // @Autowired
-    // public void setRestTemplate(RestTemplateBuilder restTemplateBuilder) {
-    //     this.restTemplate = restTemplateBuilder.build();
-    // }
-    
+    /**
+     * returns list of books and authors from SQL database.
+     * @return list of Book
+     */
     public List<Book> getBooks() {
         List<Book> books = bookRepo.findAll();
-        //List<Book> books = null;
         return books;
     }
 
-    public void stealBooksFromAPI(Long isbn) throws JsonMappingException, JsonProcessingException {
-        String url = "https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn.toString();
+    /**
+     * Read the google api to get infomation for a given ISBN number
+     * then saves the infomation we are intrested in into a local DB.
+     * @param isbn
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     * @return book that was saved
+     */
+    public Book stealBooksFromAPI(final String isbn)
+    throws JsonMappingException, JsonProcessingException {
+        String url = "https://openlibrary.org/isbn/"
+        + isbn.toString()
+        + ".json";
         String json = restTemplate.getForObject(url, String.class, 1);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode rootNode = mapper.readTree(json);
-        rootNode = rootNode.get("items").get(0);
-        String bookName = rootNode.get("volumeInfo").get("title").toString();
-        String description = rootNode
-            .get("volumeInfo")
-            .get("description")
+        String bookName = rootNode.get("title")
             .asText();
         int pageCount = rootNode
-            .get("volumeInfo")
-            .get("pageCount")
+            .get("number_of_pages")
             .asInt();
         String publisher = rootNode
-            .get("volumeInfo")
-            .get("publisher")
+            .get("publishers")
+            .get(0)
             .asText();
-        String ISBN = isbn.toString();
-        JsonNode authorName = rootNode
-        .get("volumeInfo")
+        JsonNode authorList = rootNode
         .get("authors");
 
         Set<Author> authors = new HashSet<Author>();
 
-        for (final JsonNode objNode : authorName) {
-            Author author = new Author(objNode.asText());
+        for (final JsonNode objNode : authorList) {
+            String authorID = objNode.get("key").asText();
+            url = "https://openlibrary.org/"
+            + authorID
+            + ".json";
+            String authorJson = restTemplate.getForObject(url, String.class, 1);
+            JsonNode authorNode = mapper.readTree(authorJson);
+            String authorName = authorNode.get("personal_name").asText();
+            Author author = new Author(authorID, authorName);
             authors.add(author);
         }
-        Book book = new Book((long)100, 
-            bookName,  
-            description, 
-            pageCount, 
-            publisher, 
-            ISBN,
+
+        //Long id = (long) 1;
+        Book book = new Book(isbn,
+            bookName,
+            pageCount,
+            publisher,
             authors
         );
         bookRepo.save(book);
+        return book;
     }
 }

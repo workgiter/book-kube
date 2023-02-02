@@ -2,13 +2,13 @@ package work.worker.server.models;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -23,44 +23,35 @@ import lombok.Setter;
 @Entity
 @Table(name = "books")
 public class Book {
-
+    /**unique id of book. */
     @Id
-    @GeneratedValue
-    private Long id;
+    @Column(name = "ISBN")
+    private String iSBN;
 
-    @Column(name="book_name")
+    /**name of book. */
+    @Column(name = "book_name")
     private String bookName;
 
-    // @Column(name="author_name")
-    // private String authorName;
+    // /**description of book. */
+    // @Lob
+    // @Column(name = "description", columnDefinition = "TEXT")
+    // private String description;
 
-    @Lob
-    @Column(name="description", columnDefinition="TEXT")
-    private String description;
-
-    @Column(name="page_count")
+    /**page count of book. */
+    @Column(name = "page_count")
     private int pageCount;
 
-    @Column(name="publisher")
+    /**publisher of book. */
+    @Column(name = "publisher")
     private String publisher;
 
-    @Column(name="ISBN")
-    private String ISBN;
-
+    /**set of authors who wrote the book. */
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "book_author")
+    @JsonManagedReference
     private Set<Author> writtenBy;
 
     //book name, author name, bood description, page number, publisher
     //publish data, cover image, ISBN, pageCount
 
-    // public Book (
-    //     Long idPram, 
-    //     String bookNamePram,
-    //     String authorNamePram
-    // ) {
-    //     this.id = idPram;
-    //     this.bookName = bookNamePram;
-    //     this.authorName = authorNamePram;
-    // }
 }

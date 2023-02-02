@@ -2,10 +2,11 @@ package work.worker.server.models;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -19,20 +20,29 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="authors")
+@Table(name = "authors")
 public class Author {
-    public Author(String string) {
-        authorName = string;
+    /**
+     * constructor.
+     * @param authorID
+     * @param name
+     */
+    public Author(final String authorID, final String name) {
+        id = authorID;
+        authorName = name;
     }
 
+    /**unique id for author. */
     @Id
-    @GeneratedValue
-    private Long id;
+    private String id;
 
+    /**name of author. */
     @Column(name = "author_name")
     private String authorName;
 
+    /**the set of books the author wrote. */
     @ManyToMany(mappedBy = "writtenBy", cascade = CascadeType.ALL)
+    @JsonBackReference
     private Set<Book> wroteBook;
-    
+
 }
