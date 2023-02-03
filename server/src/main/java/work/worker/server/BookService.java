@@ -57,6 +57,25 @@ public class BookService {
         return books;
     }
 
+    private Set<Author> getAuthorsFromAPI(final JsonNode authorList)
+    throws JsonMappingException, JsonProcessingException {
+        Set<Author> authors = new HashSet<Author>();
+        ObjectMapper mapper = new ObjectMapper();
+
+        for (final JsonNode objNode : authorList) {
+            String authorID = objNode.get("key").asText();
+            String url = "https://openlibrary.org"
+            + authorID
+            + ".json";
+            String authorJson = restTemplate.getForObject(url, String.class, 1);
+            JsonNode authorNode = mapper.readTree(authorJson);
+            String authorName = authorNode.get("personal_name").asText();
+            Author author = new Author(authorID, authorName);
+            authors.add(author);
+        }
+        return authors;
+    }
+
     /**
      * Read the google api to get infomation for a given ISBN number
      * then saves the infomation we are intrested in into a local DB.
@@ -85,19 +104,7 @@ public class BookService {
         JsonNode authorList = rootNode
         .get("authors");
 
-        Set<Author> authors = new HashSet<Author>();
-
-        for (final JsonNode objNode : authorList) {
-            String authorID = objNode.get("key").asText();
-            url = "https://openlibrary.org"
-            + authorID
-            + ".json";
-            String authorJson = restTemplate.getForObject(url, String.class, 1);
-            JsonNode authorNode = mapper.readTree(authorJson);
-            String authorName = authorNode.get("personal_name").asText();
-            Author author = new Author(authorID, authorName);
-            authors.add(author);
-        }
+        Set<Author> authors = getAuthorsFromAPI(authorList);
 
         //Long id = (long) 1;
         Book book = new Book(isbn,
