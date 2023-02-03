@@ -22,7 +22,16 @@ import work.worker.server.models.Book;
 public class BookService {
 
     /**object used for making http get request to google api. */
-    RestTemplate restTemplate = new RestTemplate();
+    RestTemplate restTemplate; // = new RestTemplate();
+
+    /**
+     * sets rest template.
+     * @param restTemplateNew
+     */
+    @Autowired
+    public void setRestTemplate(final RestTemplate restTemplateNew) {
+        this.restTemplate = restTemplateNew;
+    }
 
     /**reposatory for Book class. */
     BookRepository bookRepo;
