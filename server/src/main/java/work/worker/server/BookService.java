@@ -89,7 +89,7 @@ public class BookService {
 
         for (final JsonNode objNode : authorList) {
             String authorID = objNode.get("key").asText();
-            url = "https://openlibrary.org/"
+            url = "https://openlibrary.org"
             + authorID
             + ".json";
             String authorJson = restTemplate.getForObject(url, String.class, 1);

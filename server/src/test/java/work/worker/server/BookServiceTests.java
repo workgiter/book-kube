@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import work.worker.server.Repositories.BookRepository;
 import work.worker.server.models.Book;
+import work.worker.utils.TestUtilsData;
 
 public class BookServiceTests {
     /**book service. */
@@ -34,7 +35,7 @@ public class BookServiceTests {
         MockitoAnnotations.openMocks(this);
         bookService = new BookService();
         bookService.setBookRepo(bookRepository);
-        mockRestTemplate = new RestTemplate();
+        //mockRestTemplate = new RestTemplate();
         bookService.setRestTemplate(mockRestTemplate);
     }
 
@@ -47,11 +48,18 @@ public class BookServiceTests {
 
     @Test
     void stealBooksFromAPITest() {
-
+        TestUtilsData utilsData = new TestUtilsData();
+        String foxJson = utilsData.getFoxBookInfo();
+        String foxAuthorJson = utilsData.getFoxAuthorJson();
         String url = "https://openlibrary.org/isbn/9780140328721.json";
 
         when(mockRestTemplate.getForObject(url, String.class, 1))
-        .thenReturn("asdfasdffsdfsdafsd");
+        .thenReturn(foxJson);
+
+        String foxAuthorUrl = "https://openlibrary.org/authors/OL34184A.json";
+
+        when(mockRestTemplate.getForObject(foxAuthorUrl, String.class, 1))
+        .thenReturn(foxAuthorJson);
 
         try {
             bookService.stealBooksFromAPI("9780140328721");
