@@ -106,7 +106,6 @@ public class BookService {
 
         Set<Author> authors = getAuthorsFromAPI(authorList);
 
-        //Long id = (long) 1;
         Book book = new Book(isbn,
             bookName,
             pageCount,

@@ -2,6 +2,8 @@ package work.worker.server.models;
 
 import java.util.Set;
 
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -15,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@EntityScan
 @Getter
 @Setter
 @AllArgsConstructor
