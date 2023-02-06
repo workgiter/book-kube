@@ -62,6 +62,4 @@ public class BookController {
             "data not saved");
         }
     }
-    //https://www.googleapis.com/books/v1/volumes?q=isbn:9780141365442
-    //https://openlibrary.org/isbn/9780140328721.json
 }
