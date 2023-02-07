@@ -1,30 +1,47 @@
 
 import { Card, CardContent, Typography } from "@mui/material";
-import React from "react";
 import AuthorCard from "./AuthorCard";
 
-const BookCard = ({ bookData }: any) => {
+interface IAuthor {
+    id: string,
+    name: string
+}
+
+interface IBookData {
+    bookName: string,
+    pageCount: string,
+    publisher: string,
+    writtenBy: IAuthor[],
+    isbn: string
+}
+
+interface IProps {
+    bookData: IBookData
+}
+
+const BookCard = ({ bookData }: IProps) => {
+    const { bookName, pageCount, publisher, writtenBy, isbn } = bookData;
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Card sx={{ minWidth: 800, maxWidth: 1000, margin: 1 }}>
                 <CardContent>
                     <Typography>
-                        {bookData.bookName}
+                        {bookName}
                     </Typography>
                     <Typography>
-                        {`Page Count: ${bookData.pageCount}`}
+                        {`Page Count: ${pageCount}`}
                     </Typography>
                     <Typography>
-                        {`Publisher: ${bookData.publisher}`}
+                        {`Publisher: ${publisher}`}
                     </Typography>
                     <div>
-                        {bookData.writtenBy.map((author: any, index: number) => {
+                        {writtenBy.map((author: IAuthor, index: number) => {
                             return <AuthorCard key={index} authorData={author} />
                         })}
                     </div>
                     <Typography>
-                        {`ISBN:  ${bookData.isbn}`}
+                        {`ISBN:  ${isbn}`}
                     </Typography>
                 </CardContent>
             </Card>
