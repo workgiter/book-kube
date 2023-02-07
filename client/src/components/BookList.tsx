@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
 import BookCard from "./BookCard"
 
+const url = process.env.REACT_APP_SERVER_IP;
+
 const BookList = () => {
 
     let [booksData, setBooksData] = useState([])
-    const url = process.env.REACT_APP_SERVER_IP;
 
     const getBookData = () => {
         fetch(`${url}books/list`)
