@@ -28,7 +28,6 @@ const AddBook = () => {
     }
 
     const stealBook = (isbn: string) => {
-        console.log(isbn)
         setPageState("loading")
         fetch(`${url}books/steal/${isbn}`)
             .then((response) => {
