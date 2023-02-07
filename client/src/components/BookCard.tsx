@@ -13,10 +13,10 @@ const BookCard = ({ bookData }: any) => {
                         {bookData.bookName}
                     </Typography>
                     <Typography>
-                        {bookData.pageCount}
+                        {"Page Count: " + bookData.pageCount}
                     </Typography>
                     <Typography>
-                        {bookData.publisher}
+                        {"Publisher: " + bookData.publisher}
                     </Typography>
                     <div>
                         {bookData.writtenBy.map((author: any, index: number) => {
@@ -24,7 +24,7 @@ const BookCard = ({ bookData }: any) => {
                         })}
                     </div>
                     <Typography>
-                        {bookData.isbn}
+                        {"ISBN: " + bookData.isbn}
                     </Typography>
                 </CardContent>
             </Card>
