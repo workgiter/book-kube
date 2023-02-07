@@ -4,10 +4,10 @@ import BookCard from "./BookCard"
 const BookList = () => {
 
     let [booksData, setBooksData] = useState([])
+    const url = process.env.REACT_APP_SERVER_IP;
 
-    const getBookData = () => {//http://localhost:8080/books/list
-        console.log(process.env.REACT_APP_SERVER_IP)
-        fetch(process.env.REACT_APP_SERVER_IP + 'books/list')
+    const getBookData = () => {
+        fetch(`${url}books/list`)
             .then((response) => response.json())
             .then((data) => { console.log(data); setBooksData(data) });
     }
