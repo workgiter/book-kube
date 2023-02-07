@@ -18,3 +18,15 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
+          env:
+          - name: MY_SQL_URL
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: MY_SQL_URL
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: PASSWORD
+
