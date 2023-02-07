@@ -2,12 +2,15 @@ import { useState } from "react";
 
 const ISBNinput = () => {
 
+    const REACT_APP_SERVER_IP = process.env.REACT_APP_SERVER_IP
     let [bookCode, setBookCode] = useState("")
 
     const stealBook = (isbn: string) => {
-        fetch('http://server.test:30011/books/steal/' + isbn)
+        //console.log(REACT_APP_SERVER_IP)
+        fetch(REACT_APP_SERVER_IP + 'books/steal/' + isbn)
             .then((response) => response.json())
-            .then((data) => { console.log(data); });
+            .then((data) => { console.log(data); })
+            .catch(e => console.log(e));
     }
 
     return (

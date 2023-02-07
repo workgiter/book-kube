@@ -18,3 +18,9 @@ spec:
           imagePullPolicy: Never
           ports:
             - containerPort: 3000
+          env:
+          - name: REACT_APP_SERVER_IP
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: REACT_APP_SERVER_IP
