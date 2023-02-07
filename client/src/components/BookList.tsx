@@ -1,4 +1,6 @@
+import { Typography } from "@mui/material";
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom";
 import BookCard from "./BookCard"
 
 const url = process.env.REACT_APP_SERVER_IP;
@@ -19,6 +21,7 @@ const BookList = () => {
 
     return (
         <>
+            <Link to="/"><Typography variant="h3">Add New Book</Typography></Link>
             {booksData.map((bookData, index) => {
                 return <BookCard key={index} bookData={bookData} />
             })}

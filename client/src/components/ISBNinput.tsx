@@ -1,22 +1,29 @@
+import { Button, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 
-const ISBNinput = () => {
+interface IProps {
+    stealBook: (isbn: string) => void
+}
 
-    const REACT_APP_SERVER_IP = process.env.REACT_APP_SERVER_IP
+const ISBNinput = (props: IProps) => {
+
     let [bookCode, setBookCode] = useState("")
 
-    const stealBook = (isbn: string) => {
-        //console.log(REACT_APP_SERVER_IP)
-        fetch(REACT_APP_SERVER_IP + 'books/steal/' + isbn)
-            .then((response) => response.json())
-            .then((data) => { console.log(data); })
-            .catch(e => console.log(e));
-    }
 
     return (
         <>
-            <input type={"text"} value={bookCode} onChange={(e) => setBookCode(e.target.value)}></input>
-            <button onClick={() => stealBook(bookCode)}>steal book data</button>
+            <Typography variant="h1">Add a book</Typography>
+            <TextField
+                id="outlined-basic"
+                label="Please enter your isbn here..."
+                variant="outlined"
+                fullWidth
+                value={bookCode} onChange={
+                    (e) => setBookCode(e.target.value)
+                }
+            />
+            <p></p>
+            <Button onClick={() => props.stealBook(bookCode)} >Submit</Button>
         </>
     )
 }
