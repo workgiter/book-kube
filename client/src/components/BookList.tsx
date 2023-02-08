@@ -12,7 +12,7 @@ const BookList = () => {
     const getBookData = () => {
         fetch(`${url}books/list`)
             .then((response) => response.json())
-            .then((data) => { console.log(data); setBooksData(data) });
+            .then((data) => { setBooksData(data) });
     }
 
     useEffect(() => {
@@ -21,10 +21,10 @@ const BookList = () => {
 
     return (
         <>
-            <Link to="/"><Typography variant="h3">Add New Book</Typography></Link>
             {booksData.map((bookData, index) => {
                 return <BookCard key={index} bookData={bookData} />
             })}
+            <Link to="/"><Typography variant="h3">Add New Book</Typography></Link>
         </>
     )
 }

@@ -15,11 +15,12 @@ const baseBook = {
 
 const AddBook = () => {
 
-    let [pageState, setPageState] = useState("input"); //input, loading, success, fail
-    let [bookData, setBookData] = useState(baseBook)
+    //pageState has 4 posible states: input, loading, success, and fail.
+    let [pageState, setPageState] = useState("input");
+    let [bookData, setBookData] = useState(baseBook);
 
     const handleSuccess = (data: any) => {
-        console.log(data); setBookData(data); setPageState("success")
+        setBookData(data); setPageState("success")
     }
 
     const reset = () => {
@@ -45,10 +46,10 @@ const AddBook = () => {
             {
                 {
                     'input': <ISBNinput stealBook={stealBook} />,
-                    'loading': <Typography variant="h1">Loading...</Typography>,
+                    'loading': <Typography variant="h2">Loading...</Typography>,
                     'success':
                         <div>
-                            <Typography variant="h1">Book Added!</Typography>
+                            <Typography variant="h2">Book Added!</Typography>
                             <BookCard bookData={bookData} />
                             <Button onClick={() => reset()}>Add Another Book</Button>
                             <Link to="/list"><Button>See All Books</Button></Link>
@@ -56,7 +57,7 @@ const AddBook = () => {
                         </div>,
                     'fail':
                         <div>
-                            <Typography variant="h1">Failed to save</Typography>
+                            <Typography variant="h2">Failed to save</Typography>
                             <Button onClick={() => reset()}>Try to add another book</Button>
                             <Link to="/list"><Button>See All Books</Button></Link>
                         </div>
