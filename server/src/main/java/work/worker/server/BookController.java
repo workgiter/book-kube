@@ -56,17 +56,17 @@ public class BookController {
     @GetMapping(path = "/steal/{isbn}", produces = "application/json")
     Book stealBooksFromAPI(@PathVariable final String isbn)
     throws JsonMappingException, JsonProcessingException {
-        // try {
+        try {
             return bookService.stealBooksFromAPI(isbn);
-        // } catch (Exception e) {
-        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-        //     "data not saved");
-        // }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            "data not saved");
+        }
     }
 
     /**
-     * asdf.
-     * @return adsf.
+     * funtion that returns image with the given cover ID.
+     * @return image.
      * @throws JsonProcessingException
      * @throws JsonMappingException
      * @param coverID id of cover in database
