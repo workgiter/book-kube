@@ -1,19 +1,9 @@
 
 import { Card, CardContent, Typography } from "@mui/material";
+import IAuthor from "../interfaces/IAuthor";
+import IBookData from "../interfaces/IBookData";
 import AuthorCard from "./AuthorCard";
 
-interface IAuthor {
-    id: string,
-    name: string
-}
-
-interface IBookData {
-    bookName: string,
-    pageCount: string,
-    publisher: string,
-    writtenBy: IAuthor[],
-    isbn: string
-}
 
 interface IProps {
     bookData: IBookData
