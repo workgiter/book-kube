@@ -27,7 +27,7 @@ public class ServerApplication {
 	/**
 	 *  Makes a rest template that can read images.
 	 * @param messageConverters
-	 * @return asdf
+	 * @return rest template
 	 */
 	@Bean
 	public RestTemplate restTemplate(
