@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,11 +56,27 @@ public class BookController {
     @GetMapping(path = "/steal/{isbn}", produces = "application/json")
     Book stealBooksFromAPI(@PathVariable final String isbn)
     throws JsonMappingException, JsonProcessingException {
-        try {
+        // try {
             return bookService.stealBooksFromAPI(isbn);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-            "data not saved");
-        }
+        // } catch (Exception e) {
+        //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+        //     "data not saved");
+        // }
+    }
+
+    /**
+     * asdf.
+     * @return adsf.
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
+     * @param coverID id of cover in database
+     */
+    @GetMapping(
+        path = "/cover/{coverID}",
+        produces =  MediaType.IMAGE_JPEG_VALUE
+    )
+    byte[] imageGet(@PathVariable final String coverID)
+    throws JsonMappingException, JsonProcessingException {
+        return bookService.imageGet(coverID);
     }
 }

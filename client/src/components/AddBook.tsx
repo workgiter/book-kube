@@ -9,6 +9,7 @@ const baseBook = {
     bookName: "",
     pageCount: "",
     publisher: "",
+    coverImg: "",
     writtenBy: [{ id: "", name: "" }],
     isbn: ""
 }
