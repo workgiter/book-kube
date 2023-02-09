@@ -24,17 +24,8 @@ public class ServerApplication {
 	@Autowired
 	BookRepository bookRepo;
 
-	//     /**
-    //  * hjk.
-    //  * @return hg
-    //  */
-    // @Bean
-    // public RestTemplate restTemplate() {
-    //     RestTemplate restTemplate1 = new RestTemplate();
-    //     return restTemplate1;
-    // }
 	/**
-	 * asdf.
+	 *  Makes a rest template that can read images.
 	 * @param messageConverters
 	 * @return asdf
 	 */
