@@ -32,7 +32,8 @@ public class WebSecurityConfig {
                 "/books/steal/*",
                 "/h2-console/",
                 "/",
-                "/error"
+                "/error",
+                "/books/cover/*"
             ).permitAll()
             .and()
             .csrf().disable().headers().frameOptions().disable();

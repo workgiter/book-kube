@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -61,5 +62,21 @@ public class BookController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             "data not saved");
         }
+    }
+
+    /**
+     * funtion that returns image with the given cover ID.
+     * @return image.
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
+     * @param coverID id of cover in database
+     */
+    @GetMapping(
+        path = "/cover/{coverID}",
+        produces =  MediaType.IMAGE_JPEG_VALUE
+    )
+    byte[] imageGet(@PathVariable final String coverID)
+    throws JsonMappingException, JsonProcessingException {
+        return bookService.imageGet(coverID);
     }
 }

@@ -1,5 +1,8 @@
 package work.worker.server;
 
+// import java.io.IOException;
+// import java.nio.file.Files;
+// import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,8 +18,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import work.worker.server.Repositories.BookRepository;
+import work.worker.server.Repositories.CoverImgRepository;
 import work.worker.server.models.Author;
 import work.worker.server.models.Book;
+import work.worker.server.models.CoverImg;
 
 @Component
 public class BookService {
@@ -44,6 +49,19 @@ public class BookService {
     @Autowired
     public void setBookRepo(final BookRepository newBookRepo) {
         this.bookRepo = newBookRepo;
+    }
+
+    /**cover img repo. */
+    CoverImgRepository coverImgRepo;
+
+    /**
+     * sets CoverImgRepo to passed in CoverImgRepo.
+     * This lets you pass in a mock during testing
+     * @param newCoverImgRepo reposatory for CoverImg class
+     */
+    @Autowired
+    public void setCoverImgRepo(final CoverImgRepository newCoverImgRepo) {
+        this.coverImgRepo = newCoverImgRepo;
     }
 
     BookService() { }
@@ -101,18 +119,45 @@ public class BookService {
             .get("publishers")
             .get(0)
             .asText();
+        String imageID = rootNode
+            .get("covers")
+            .get(0)
+            .asText();
         JsonNode authorList = rootNode
         .get("authors");
 
         Set<Author> authors = getAuthorsFromAPI(authorList);
 
+        CoverImg image = saveCover(imageID);
+
         Book book = new Book(isbn,
             bookName,
             pageCount,
             publisher,
+            image,
             authors
         );
         bookRepo.save(book);
         return book;
+    }
+
+    private CoverImg saveCover(final String imageID) {
+        byte[] image = restTemplate.getForObject(
+            "https://covers.openlibrary.org/b/ID/" + imageID + "-S.jpg",
+            byte[].class,
+            1
+        );
+        CoverImg coverImg = new CoverImg(imageID, image);
+        return coverImg;
+    }
+
+    /**
+     * gets img from database.
+     * @param imageID
+     * @return the image
+     */
+    public byte[] imageGet(final String imageID) {
+        CoverImg img = coverImgRepo.findById(imageID).get();
+        return img.getCoverPicture();
     }
 }

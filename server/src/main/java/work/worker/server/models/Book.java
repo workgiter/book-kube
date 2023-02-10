@@ -5,13 +5,17 @@ import java.util.Set;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +30,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "books")
 public class Book {
+
     /**unique id of book. */
     @Id
     @Column(name = "ISBN")
@@ -35,11 +40,6 @@ public class Book {
     @Column(name = "book_name")
     private String bookName;
 
-    // /**description of book. */
-    // @Lob
-    // @Column(name = "description", columnDefinition = "TEXT")
-    // private String description;
-
     /**page count of book. */
     @Column(name = "page_count")
     private int pageCount;
@@ -47,6 +47,13 @@ public class Book {
     /**publisher of book. */
     @Column(name = "publisher")
     private String publisher;
+
+    /**cover of book. */
+    @OneToOne(fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL)
+    @JoinColumn(name = "cover_join", referencedColumnName = "coverID")
+    @JsonSerialize(using = CustomListSerializer.class)
+    private CoverImg coverImg;
 
     /**set of authors who wrote the book. */
     @ManyToMany(cascade = CascadeType.ALL)
