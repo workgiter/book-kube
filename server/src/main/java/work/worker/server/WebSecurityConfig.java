@@ -29,8 +29,10 @@ public class WebSecurityConfig {
             .requestMatchers(
                 "/books/",
                 "/books/list",
-                "/books/steal/*",
+                "/books/list/*",
+                "/books/steal/*/*",
                 "/h2-console/",
+                "/books/test",
                 "/",
                 "/error",
                 "/books/cover/*"

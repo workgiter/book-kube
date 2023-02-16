@@ -31,10 +31,12 @@ import lombok.Setter;
 @Table(name = "books")
 public class Book {
 
+
+
     /**unique id of book. */
     @Id
     @Column(name = "ISBN")
-    private String iSBN;
+    private String isbn;
 
     /**name of book. */
     @Column(name = "book_name")
@@ -60,6 +62,12 @@ public class Book {
     @JoinTable(name = "book_author")
     @JsonManagedReference
     private Set<Author> writtenBy;
+
+    /**set of user who added the book. */
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "book_user")
+    @JsonManagedReference
+    private Set<SiteUser> addedBy;
 
     //book name, author name, bood description, page number, publisher
     //publish data, cover image, ISBN, pageCount

@@ -18,10 +18,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import work.worker.server.Repositories.BookRepository;
+import work.worker.server.Repositories.BookSiteUserRepository;
 import work.worker.server.Repositories.CoverImgRepository;
+import work.worker.server.Repositories.SiteUserRepository;
 import work.worker.server.models.Author;
 import work.worker.server.models.Book;
+import work.worker.server.models.BookSiteUser;
 import work.worker.server.models.CoverImg;
+import work.worker.server.models.SiteUser;
 
 @Component
 public class BookService {
@@ -53,16 +57,28 @@ public class BookService {
 
     /**cover img repo. */
     CoverImgRepository coverImgRepo;
+    /**site user repo. */
+    SiteUserRepository siteUserRepo;
+    /**book site user repo. */
+    BookSiteUserRepository bookSiteUserRepo;
 
     /**
      * sets CoverImgRepo to passed in CoverImgRepo.
      * This lets you pass in a mock during testing
      * @param newCoverImgRepo reposatory for CoverImg class
+     * @param newSiteUserRepo reposatory for siteUser class
+     * @param newBookSiteUserRepo
      */
     @Autowired
-    public void setCoverImgRepo(final CoverImgRepository newCoverImgRepo) {
+    public void setRepo(final CoverImgRepository newCoverImgRepo,
+    final SiteUserRepository newSiteUserRepo,
+    final BookSiteUserRepository newBookSiteUserRepo) {
         this.coverImgRepo = newCoverImgRepo;
+        this.siteUserRepo = newSiteUserRepo;
+        this.bookSiteUserRepo = newBookSiteUserRepo;
     }
+
+
 
     BookService() { }
 
@@ -73,6 +89,17 @@ public class BookService {
     public List<Book> getBooks() {
         List<Book> books = bookRepo.findAll();
         return books;
+    }
+
+    /**
+     * return list of books added by user.
+     * @param user
+     * @return books
+     */
+    public Set<Book> getBooksFromUser(final String user) {
+        SiteUser userRequested = siteUserRepo.findById(user).orElse(null);
+        Set<Book> userBooks = userRequested.getBook();
+        return userBooks;
     }
 
     private Set<Author> getAuthorsFromAPI(final JsonNode authorList)
@@ -95,15 +122,27 @@ public class BookService {
     }
 
     /**
+     * if code called with ony one param.
+     * @param isbn
+     * @return null book
+     */
+    public Book stealBooksFromAPI(final String isbn)
+    throws JsonMappingException, JsonProcessingException {
+        return stealBooksFromAPI(isbn, "null");
+    }
+
+    /**
      * Read the google api to get infomation for a given ISBN number
      * then saves the infomation we are intrested in into a local DB.
      * @param isbn
+     * @param user
      * @throws JsonMappingException
      * @throws JsonProcessingException
      * @return book that was saved
      */
-    public Book stealBooksFromAPI(final String isbn)
+    public Book stealBooksFromAPI(final String isbn, final String user)
     throws JsonMappingException, JsonProcessingException {
+
         String url = "https://openlibrary.org/isbn/"
         + isbn.toString()
         + ".json";
@@ -130,15 +169,40 @@ public class BookService {
 
         CoverImg image = saveCover(imageID);
 
-        Book book = new Book(isbn,
-            bookName,
-            pageCount,
-            publisher,
-            image,
-            authors
-        );
-        bookRepo.save(book);
-        return book;
+        Boolean bookExists = bookRepo.existsById(isbn);
+        if (bookExists) {
+            Book book = bookRepo.getReferenceById(isbn);
+            book.setBookName(bookName);
+            book.setPageCount(pageCount);
+            book.setPublisher(publisher);
+            book.setCoverImg(image);
+            book.setWrittenBy(authors);
+
+            bookRepo.save(book);
+
+            SiteUser newUser = new SiteUser(user, null);
+            siteUserRepo.save(newUser);
+
+            BookSiteUser newBookUserJoin = new BookSiteUser(isbn, user);
+            bookSiteUserRepo.save(newBookUserJoin);
+
+            return null;
+        } else {
+            Set<SiteUser> users;
+            users = new HashSet<SiteUser>();
+            users.add(new SiteUser(user, null));
+
+            Book book = new Book(isbn,
+                bookName,
+                pageCount,
+                publisher,
+                image,
+                authors,
+                users
+            );
+            return bookRepo.save(book);
+        }
+
     }
 
     private CoverImg saveCover(final String imageID) {
@@ -160,4 +224,13 @@ public class BookService {
         CoverImg img = coverImgRepo.findById(imageID).get();
         return img.getCoverPicture();
     }
+
+
+    /**asdf. */
+    public void testPath() {
+        System.out.println("HHHHHHHHHHHHHHHHHHH"
+        + "HHHHHHHHHHHHHHHHHHHHHHHHHHH   this got here   "
+        + "HHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+    }
+
 }

@@ -23,7 +23,7 @@ const BookCard = ({ bookData }: IProps) => {
                             height={58}
                             style={{ margin: 6 }}
                             src={`https://covers.openlibrary.org/b/ID/${coverImg}-S.jpg`}
-                            alt="fox carying chicken"
+                            alt="book cover"
                         />
                         <div style={{ width: "60%", margin: 1 }}>
                             <Typography variant="h5">

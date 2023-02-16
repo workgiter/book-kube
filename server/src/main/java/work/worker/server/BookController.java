@@ -1,6 +1,7 @@
 package work.worker.server;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,12 @@ public class BookController {
     @Autowired
     BookService bookService;
 
+    /**asdf. */
+    @GetMapping(path = "/test", produces = "application/json")
+    void testPath() {
+        bookService.testPath();
+    }
+
     /**
      * Get's list of books and their authors from the database.
      * @return list of Book Objects
@@ -44,20 +51,42 @@ public class BookController {
         }
     }
 
+        /**
+     * Get's list of books and their authors added by a
+     * given user from the database.
+     * @param user
+     * @return list of Book Objects
+     * @throws JsonMappingException
+     * @throws JsonProcessingException
+     */
+    @GetMapping(path = "/list/{user}", produces = "application/json")
+    Set<Book> getBooksFromUser(@PathVariable final String user)
+    throws JsonMappingException, JsonProcessingException {
+        try {
+            Set<Book> books = bookService.getBooksFromUser(user);
+            return books;
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+            "could not read data from database");
+        }
+    }
+
     /**
      * take in the isbn number of a book and makes a request to
      * the open library books api, then copies parts of the result
      * into a local database.
      * @param isbn isbn number referancing a book
+     * @param user user submiting request
      * @throws JsonMappingException
      * @throws JsonProcessingException
      * @return book that was saved
      */
-    @GetMapping(path = "/steal/{isbn}", produces = "application/json")
-    Book stealBooksFromAPI(@PathVariable final String isbn)
+    @GetMapping(path = "/steal/{isbn}/{user}", produces = "application/json")
+    Book stealBooksFromAPI(@PathVariable final String isbn,
+    @PathVariable final String user)
     throws JsonMappingException, JsonProcessingException {
         try {
-            return bookService.stealBooksFromAPI(isbn);
+            return bookService.stealBooksFromAPI(isbn, user);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
             "data not saved");

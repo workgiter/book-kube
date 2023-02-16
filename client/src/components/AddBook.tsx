@@ -31,7 +31,7 @@ const AddBook = () => {
 
     const stealBook = (isbn: string) => {
         setPageState("loading")
-        fetch(`${url}books/steal/${isbn}`)
+        fetch(`${url}books/steal/${isbn}/10`)
             .then((response) => {
                 if (response.ok) { return response.json() } else {
                     throw new Error("");
